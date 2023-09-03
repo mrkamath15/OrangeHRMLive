@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Orange HRM Live Automation Suite">
+<test name="Orange HRM Test">
+<parameter name="product" value="UAT_Sanity_Suite" />
+<parameter name="env" value="UAT" />
+<classes>
+<class name="demo.orangehrmlive.generic.DriverScript" />
+</classes>
+</test>
+</suite>
