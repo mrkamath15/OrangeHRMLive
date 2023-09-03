@@ -67,7 +67,7 @@ public class GenericActionKeywords extends  DriverScript {
         }
         catch (Exception e) {
             DriverScript.bResult = false;
-            logger.info("Error in launchAndNavigate : " + e.getMessage());
+            logger.error("Error in launchAndNavigate : " + e.getMessage());
         }
     }
 
@@ -92,24 +92,77 @@ public class GenericActionKeywords extends  DriverScript {
         }
         catch (Exception e) {
             DriverScript.bResult = false;
-            logger.info("Unable to verifyAllElementsExist : " + e.getMessage());
+            logger.error("Unable to verifyAllElementsExist : " + e.getMessage());
         }
     }
 
-    public void verifyTitle(ArrayList<String> testDataList) {
-        logger.info("verifyTitle called");
+    public boolean verifyTitle(ArrayList<String> testDataList) {
+        boolean isTitleMatches;
+        try {
+            logger.info("verifyTitle called");
+            isTitleMatches = wait.until(ExpectedConditions.titleIs(testDataList.get(0)));
+            DriverScript.bResult = true;
+        }
+        catch (Exception e) {
+            logger.error("Unable to verifyTitle : " + e.getMessage());
+            isTitleMatches = false;
+            DriverScript.bResult = false;
+        }
+        return isTitleMatches;
     }
 
     public void sendText(ArrayList<String> objectIdentifierList, ArrayList<String> testDataList) {
-        logger.info("sendText called");
+        try {
+            logger.info("sendText called");
+            By locateBy = readObjectRepository.getObjectLocator(objectIdentifierList.get(0));
+            WebElement element = waitUntilElementIsVisible(locateBy);
+            element.clear();
+            element.sendKeys(testDataList.get(0));
+            logger.info("Successfully sent text : " + testDataList.get(0) + " to web-element : " + element.toString());
+            DriverScript.bResult = true;
+        }
+        catch (Exception e) {
+            logger.error("Unable to send text to web-element : " + e.getMessage());
+            DriverScript.bResult = false;
+        }
     }
 
     public void click(ArrayList<String> objectIdentifierList) {
-        logger.info("click called");
+        try {
+            logger.info("click called");
+            By locateBy = readObjectRepository.getObjectLocator(objectIdentifierList.get(0));
+            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locateBy));
+            element.click();
+            DriverScript.bResult = true;
+            logger.info("Successfully clicked the web-element : " + element.toString());
+        }
+        catch (Exception e) {
+            logger.error("Unable to click web-element : " + e.getMessage());
+            DriverScript.bResult = false;
+        }
     }
 
     public void verifyTextMatches(ArrayList<String> objectIdentifierList, ArrayList<String> testDataList) {
-        logger.info("verifyTextMatches called");
+        try {
+            logger.info("verifyTextMatches called");
+            By locateBy = readObjectRepository.getObjectLocator(objectIdentifierList.get(0));
+            WebElement element = waitUntilElementIsVisible(locateBy);
+            String expectedText = testDataList.get(0);
+            String actualText = element.getText();
+            if (expectedText.equals(actualText)) {
+                DriverScript.bResult = true;
+                logger.info("Element text : " + actualText + ", matches with the expected text : " + expectedText);
+            }
+            else {
+                DriverScript.bResult = false;
+                logger.info("Element text : " + actualText + ", DOES NOT match with the expected text : " + expectedText);
+            }
+
+        }
+        catch (Exception e) {
+            logger.info("Unable to retrieve text from web-element : " + e.getMessage());
+            DriverScript.bResult = false;
+        }
     }
 
     public WebElement waitUntilElementIsVisible(By locateBy) {
