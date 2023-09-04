@@ -1,9 +1,19 @@
 package demo.orangehrmlive.config;
 
+import demo.orangehrmlive.generic.DriverScript;
+
+import java.io.File;
+
 public class Constants {
     //Paths Test Cases and Report
     public static String TESTCASES_PATH = System.getProperty("user.dir") + "/TestCases/#ENV/#PRODUCT.xlsx";
     public static final String REPORTS_PATH = System.getProperty("user.dir") + "/Reports/";
+
+    //Screenshots
+    public static final File SCREENSHOT_FOLDER_PATH = new File(System.getProperty("user.dir") + "/Screenshots/");
+
+    //Extent Reports
+    public static final String EXTENT_REPORT_PATH = System.getProperty("user.dir") + "/ExtentReports/ExtentReport_" + DriverScript.DATE_TIME_FORMAT + ".html";
 
     //Global properties
     public static final String UAT_GLOBAL_PROPERTIES = System.getProperty("user.dir") + "/src/main/resources/GlobalProperties/OrangeHRM_UAT.properties";
@@ -37,4 +47,8 @@ public class Constants {
     public static final int COL_TS_TEST_DATA = 5;
     public static final int COL_TS_RESULT = 6;
     public static final int COL_TS_SCREENSHOT_PATH = 7;
+
+    //Result
+    public static final String RESULT_PASS = "PASS";
+    public static final String RESULT_FAIL = "FAIL";
 }

@@ -1,5 +1,10 @@
 package demo.orangehrmlive.generic;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.configuration.Theme;
 import demo.orangehrmlive.config.Constants;
 import demo.orangehrmlive.utility.ExcelUtility;
 import demo.orangehrmlive.utility.ReadObjectRepository;
@@ -42,16 +47,35 @@ public class DriverScript {
     public static int iTestStep;
     public static int iTestLastStep;
 
+    private static ExtentReports extentReports;
+    public static ExtentTest extentTest;
+    private static ExtentSparkReporter extentSparkReporter;
+
     public static Method method;
+
+    public static String sScreenshotFilePath = "";
 
     @BeforeSuite
     public static void setUp() {
+        if (!Constants.SCREENSHOT_FOLDER_PATH.exists()) {
+            Constants.SCREENSHOT_FOLDER_PATH.mkdir();
+            logger.info("Created screenshot folder");
+        }
+        extentSparkReporter = new ExtentSparkReporter(Constants.EXTENT_REPORT_PATH);
+        extentSparkReporter.config().setEncoding("utf-8");
+        extentSparkReporter.config().setReportName("Orange HRM Report");
+        extentSparkReporter.config().setDocumentTitle("Orange HRM");
+        extentSparkReporter.config().setTheme(Theme.DARK);
 
+        extentReports = new ExtentReports();
+        extentReports.attachReporter(extentSparkReporter);
     }
 
     @AfterSuite
     public static void tearDown() {
         driver.quit();
+        logger.info("Closed the driver instance");
+        extentReports.flush();
     }
 
 
@@ -108,6 +132,12 @@ public class DriverScript {
                         executeActions();
                     }
                 }
+                if (DriverScript.bResult == true) {
+                    ExcelUtility.setCellData(Constants.SHEET_TESTCASES, iTestCase, Constants.COL_TC_RESULT, Constants.RESULT_PASS);
+                }
+                else {
+                    ExcelUtility.setCellData(Constants.SHEET_TESTCASES, iTestCase, Constants.COL_TC_RESULT, Constants.RESULT_FAIL);
+                }
             }
         }
     }
@@ -160,12 +190,25 @@ public class DriverScript {
                 paramTypeArray = new Class[] {ArrayList.class};
                 paramDataArray = new Object[] {testDataList};
             }
-
+            String testName = sTestCaseId + "_" + sTestStepId + "_" + sTestStepName;
+            extentTest = extentReports.createTest(testName);
             method = genericActionKeywords.getClass().getMethod(sActionKeyword, paramTypeArray);
             method.invoke(genericActionKeywords, paramDataArray);
         }
         catch (Exception e) {
             logger.info("Unable to execute test actions : " + e.getMessage());
+        }
+        finally {
+            if (DriverScript.bResult == true) {
+                genericActionKeywords.captureScreenshot();
+                ExcelUtility.setCellData(Constants.SHEET_DEFAULT_TEST_STEPS, iTestStep, Constants.COL_TS_RESULT, Constants.RESULT_PASS);
+                extentTest.log(Status.PASS, "Test step passed");
+            }
+            else {
+                genericActionKeywords.captureScreenshot();
+                ExcelUtility.setCellData(Constants.SHEET_DEFAULT_TEST_STEPS, iTestStep, Constants.COL_TS_RESULT, Constants.RESULT_FAIL);
+                extentTest.log(Status.FAIL, "Test step failed");
+            }
         }
     }
 
