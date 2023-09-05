@@ -10,7 +10,7 @@ public class Constants {
     public static final String REPORTS_PATH = System.getProperty("user.dir") + "/Reports/";
 
     //Screenshots
-    public static final File SCREENSHOT_FOLDER_PATH = new File(System.getProperty("user.dir") + "/Screenshots/");
+    public static final File SCREENSHOT_FOLDER_PATH = new File(System.getProperty("user.dir"));
 
     //Extent Reports
     public static final String EXTENT_REPORT_PATH = System.getProperty("user.dir") + "/ExtentReports/ExtentReport_" + DriverScript.DATE_TIME_FORMAT + ".html";

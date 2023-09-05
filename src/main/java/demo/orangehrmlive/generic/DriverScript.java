@@ -2,6 +2,7 @@ package demo.orangehrmlive.generic;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
@@ -54,6 +55,7 @@ public class DriverScript {
     public static Method method;
 
     public static String sScreenshotFilePath = "";
+    public static String sExtentScreenshotFilePath = "";
 
     @BeforeSuite
     public static void setUp() {
@@ -203,11 +205,13 @@ public class DriverScript {
                 genericActionKeywords.captureScreenshot();
                 ExcelUtility.setCellData(Constants.SHEET_DEFAULT_TEST_STEPS, iTestStep, Constants.COL_TS_RESULT, Constants.RESULT_PASS);
                 extentTest.log(Status.PASS, "Test step passed");
+                extentTest.log(Status.PASS, MediaEntityBuilder.createScreenCaptureFromPath(sExtentScreenshotFilePath).build());
             }
             else {
                 genericActionKeywords.captureScreenshot();
                 ExcelUtility.setCellData(Constants.SHEET_DEFAULT_TEST_STEPS, iTestStep, Constants.COL_TS_RESULT, Constants.RESULT_FAIL);
                 extentTest.log(Status.FAIL, "Test step failed");
+                extentTest.log(Status.PASS, MediaEntityBuilder.createScreenCaptureFromPath(sExtentScreenshotFilePath).build());
             }
         }
     }

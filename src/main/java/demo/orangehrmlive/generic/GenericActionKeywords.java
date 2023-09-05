@@ -209,8 +209,9 @@ public class GenericActionKeywords extends  DriverScript {
 
     public void captureScreenshot(String... name) {
         try {
-            sScreenshotFilePath = Constants.SCREENSHOT_FOLDER_PATH + "/" + DATE_TIME_FORMAT + "/" + sTestCaseId + "_" + sTestStepId + "_" + sTestStepName.replaceAll(" ", "_")
+            sExtentScreenshotFilePath = "/Screenshots/" + DATE_TIME_FORMAT + "/" + sTestCaseId + "_" + sTestStepId + "_" + sTestStepName.replaceAll(" ", "_")
                     + "_" + DATE_TIME_FORMAT + ".png";
+            sScreenshotFilePath = Constants.SCREENSHOT_FOLDER_PATH + sExtentScreenshotFilePath;
             TakesScreenshot ts = (TakesScreenshot) driver;
             File srcFile = ts.getScreenshotAs(OutputType.FILE);
             FileUtils.copyFile(srcFile, new File(sScreenshotFilePath));
